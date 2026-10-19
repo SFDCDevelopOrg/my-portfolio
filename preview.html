@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101a2b">
+<title>Hemavathi N M — Salesforce Architect</title>
+<style>
+  :root {
+    --ink: #172235;
+    --muted: #64748b;
+    --navy: #101a2b;
+    --navy-2: #18263b;
+    --paper: #f7f8f5;
+    --white: #fff;
+    --teal: #54d6bd;
+    --teal-dark: #187b70;
+    --line: #e4e9e7;
+    --serif: Georgia, "Times New Roman", serif;
+    --sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    color: var(--ink);
+    background: var(--paper);
+    font-family: var(--sans);
+    line-height: 1.6;
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; }
+
+  .shell { width: min(1120px, calc(100% - 48px)); margin: 0 auto; }
+  .nav-wrap {
+    position: absolute;
+    inset: 0 0 auto;
+    z-index: 10;
+    color: #f5f8fb;
+  }
+  nav {
+    height: 82px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255,255,255,.12);
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: .02em;
+  }
+  .brand-mark {
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(84,214,189,.65);
+    color: var(--teal);
+    border-radius: 12px 12px 12px 4px;
+    font-size: 13px;
+    letter-spacing: -.04em;
+  }
+  .nav-links { display: flex; align-items: center; gap: 34px; font-size: 13px; color: #c7d0dc; }
+  .nav-links a { transition: color .2s ease; }
+  .nav-links a:hover, .nav-links a.active { color: var(--teal); }
+  .nav-contact {
+    padding: 10px 16px;
+    border: 1px solid rgba(84,214,189,.65);
+    border-radius: 999px;
+    color: var(--teal) !important;
+  }
+  .menu-toggle {
+    display: none;
+    background: transparent;
+    border: 0;
+    color: white;
+    font-size: 25px;
+    cursor: pointer;
+  }
+
+  .hero {
+    min-height: 690px;
+    padding: 154px 0 88px;
+    position: relative;
+    overflow: hidden;
+    color: white;
+    background:
+      radial-gradient(ellipse at 81% 27%, rgba(84,214,189,.15), transparent 31%),
+      radial-gradient(ellipse at 7% 90%, rgba(76,121,177,.16), transparent 37%),
+      linear-gradient(124deg, #101a2b 0%, #142139 58%, #101a2b 100%);
+  }
+  .hero::before {
+    content: "";
+    position: absolute;
+    width: 570px;
+    height: 570px;
+    border: 1px solid rgba(84,214,189,.12);
+    border-radius: 50%;
+    right: -180px;
+    top: 145px;
+    box-shadow: 0 0 0 48px rgba(84,214,189,.025), 0 0 0 100px rgba(84,214,189,.02);
+  }
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    opacity: .17;
+    pointer-events: none;
+    background-image: linear-gradient(rgba(255,255,255,.06) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(255,255,255,.06) 1px, transparent 1px);
+    background-size: 72px 72px;
+    mask-image: linear-gradient(to right, transparent, black 78%);
+  }
+  .hero-content { position: relative; z-index: 1; display: grid; grid-template-columns: 1.2fr .8fr; gap: 64px; align-items: center; }
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--teal);
+    text-transform: uppercase;
+    letter-spacing: .16em;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .eyebrow::before { content: ""; width: 28px; height: 1px; background: var(--teal); }
+  h1 {
+    margin: 23px 0 20px;
+    max-width: 700px;
+    font-size: clamp(44px, 6vw, 76px);
+    line-height: 1.04;
+    letter-spacing: -.055em;
+    font-weight: 600;
+  }
+  h1 em { color: var(--teal); font-family: var(--serif); font-weight: 400; }
+  .hero-copy {
+    max-width: 610px;
+    color: #c4ceda;
+    font-size: 17px;
+    line-height: 1.75;
+  }
+  .hero-actions { display: flex; align-items: center; gap: 13px; margin-top: 33px; flex-wrap: wrap; }
+  .button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border-radius: 999px;
+    padding: 13px 20px;
+    font-size: 13px;
+    font-weight: 700;
+    transition: transform .2s ease, background .2s ease, border-color .2s ease;
+  }
+  .button:hover { transform: translateY(-2px); }
+  .button-primary { background: var(--teal); color: #10252a; }
+  .button-primary:hover { background: #7be6d2; }
+  .button-ghost { border: 1px solid rgba(255,255,255,.23); color: white; }
+  .button-ghost:hover { border-color: var(--teal); }
+
+  .hero-card {
+    position: relative;
+    min-height: 340px;
+    border: 1px solid rgba(255,255,255,.16);
+    border-radius: 26px;
+    padding: 28px;
+    background: linear-gradient(145deg, rgba(255,255,255,.11), rgba(255,255,255,.035));
+    backdrop-filter: blur(12px);
+    box-shadow: 0 30px 90px rgba(0,0,0,.22);
+  }
+  .card-topline { display: flex; justify-content: space-between; align-items: center; color: #aebdca; font-size: 11px; text-transform: uppercase; letter-spacing: .12em; }
+  .status-dot { width: 8px; height: 8px; display: inline-block; background: var(--teal); border-radius: 50%; margin-right: 7px; box-shadow: 0 0 0 5px rgba(84,214,189,.12); }
+  .monogram {
+    width: 116px;
+    height: 116px;
+    display: grid;
+    place-items: center;
+    margin: 38px auto 23px;
+    border-radius: 34px 34px 34px 10px;
+    color: #112333;
+    font-weight: 700;
+    font-size: 32px;
+    letter-spacing: -.08em;
+    background: linear-gradient(135deg, #a6f3e2, #54d6bd 60%, #76b9c2);
+    box-shadow: 0 18px 55px rgba(84,214,189,.22);
+  }
+  .hero-card h2 { margin: 0; text-align: center; font-size: 21px; letter-spacing: -.03em; }
+  .hero-card p { margin: 6px 0 22px; text-align: center; color: #b4c0ce; font-size: 13px; }
+  .card-tags { display: flex; justify-content: center; flex-wrap: wrap; gap: 7px; }
+  .tag {
+    padding: 6px 10px;
+    border: 1px solid rgba(255,255,255,.14);
+    border-radius: 999px;
+    color: #d9e1e9;
+    font-size: 10px;
+  }
+
+  .stats-band { background: #fff; border-bottom: 1px solid var(--line); }
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    padding: 26px 0;
+  }
+  .stat { padding: 4px 30px; border-right: 1px solid var(--line); }
+  .stat:first-child { padding-left: 0; }
+  .stat:last-child { border-right: 0; }
+  .stat strong { display: block; color: var(--ink); font-family: var(--serif); font-size: 30px; line-height: 1.2; font-weight: 500; }
+  .stat span { color: var(--muted); font-size: 11px; letter-spacing: .07em; text-transform: uppercase; }
+
+  section { padding: 104px 0; }
+  .section-kicker { color: var(--teal-dark); font-size: 11px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+  .section-title {
+    margin: 12px 0 18px;
+    font-size: clamp(32px, 4vw, 48px);
+    line-height: 1.12;
+    letter-spacing: -.045em;
+    font-weight: 600;
+  }
+  .section-lede { max-width: 640px; color: var(--muted); font-size: 15px; line-height: 1.8; }
+  .about-grid { display: grid; grid-template-columns: .8fr 1.2fr; gap: 90px; align-items: start; }
+  .about-note {
+    padding: 28px;
+    border-left: 3px solid var(--teal);
+    background: #eef5f2;
+    border-radius: 0 16px 16px 0;
+    color: #34515a;
+    font-family: var(--serif);
+    font-size: 20px;
+    line-height: 1.55;
+  }
+  .about-body p { margin: 0 0 18px; color: #516174; font-size: 15px; line-height: 1.85; }
+  .about-body strong { color: var(--ink); }
+
+  .work-section { background: #eef2f0; }
+  .section-heading { display: flex; justify-content: space-between; align-items: end; gap: 30px; margin-bottom: 38px; }
+  .section-heading .section-lede { max-width: 440px; margin-bottom: 5px; }
+  .project-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+  .project {
+    position: relative;
+    overflow: hidden;
+    min-height: 270px;
+    padding: 27px;
+    border: 1px solid #dce5e2;
+    border-radius: 20px;
+    background: #fff;
+    transition: transform .25s ease, box-shadow .25s ease;
+  }
+  .project:hover { transform: translateY(-4px); box-shadow: 0 18px 40px rgba(16,26,43,.08); }
+  .project::after {
+    content: attr(data-num);
+    position: absolute;
+    right: 18px;
+    bottom: -38px;
+    color: #f0f4f2;
+    font-family: var(--serif);
+    font-size: 145px;
+    line-height: 1;
+    pointer-events: none;
+  }
+  .project > * { position: relative; z-index: 1; }
+  .project-type { color: var(--teal-dark); font-size: 10px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+  .project h3 { max-width: 390px; margin: 16px 0 10px; font-size: 23px; line-height: 1.2; letter-spacing: -.035em; }
+  .project p { max-width: 450px; margin: 0; color: var(--muted); font-size: 13px; line-height: 1.75; }
+  .project-foot { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 21px; }
+  .project-foot span { padding: 5px 9px; background: #f0f5f3; border-radius: 999px; color: #56716e; font-size: 10px; }
+
+  .expertise-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 42px; }
+  .expertise-card {
+    padding: 25px;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    background: white;
+  }
+  .expertise-icon {
+    width: 40px; height: 40px; display: grid; place-items: center;
+    border-radius: 13px; background: #e6f7f2; color: var(--teal-dark); font-size: 18px;
+  }
+  .expertise-card h3 { margin: 18px 0 8px; font-size: 17px; }
+  .expertise-card p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.75; }
+  .tech-list { display: flex; gap: 9px; flex-wrap: wrap; margin-top: 25px; }
+  .tech-list span { border: 1px solid #dce5e2; border-radius: 999px; padding: 8px 12px; color: #526276; font-size: 11px; background: rgba(255,255,255,.65); }
+
+  .cert-section { color: white; background: var(--navy); }
+  .cert-section .section-kicker { color: var(--teal); }
+  .cert-section .section-lede { color: #aebccb; }
+  .cert-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 38px; }
+  .cert {
+    min-height: 112px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 18px;
+    border: 1px solid rgba(255,255,255,.13);
+    border-radius: 15px;
+    background: rgba(255,255,255,.045);
+  }
+  .cert .seal { color: var(--teal); font-size: 18px; }
+  .cert span:last-child { color: #e4eaf0; font-size: 12px; line-height: 1.45; }
+
+  .contact {
+    padding: 86px 0;
+    background:
+      radial-gradient(circle at 85% 10%, rgba(84,214,189,.12), transparent 28%),
+      #e5f2ee;
+  }
+  .contact-inner { display: flex; justify-content: space-between; align-items: center; gap: 40px; }
+  .contact .section-title { max-width: 600px; }
+  .contact .section-lede { max-width: 540px; }
+  .contact-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+  .contact .button-primary { background: var(--navy); color: white; }
+  .contact .button-primary:hover { background: #243851; }
+  .button-light { border: 1px solid #b7ccc5; color: #25444a; background: rgba(255,255,255,.42); cursor: pointer; }
+  .button-light:hover { border-color: var(--teal-dark); }
+
+  footer { padding: 22px 0; color: #91a0ae; background: #0c1421; font-size: 11px; }
+  .footer-inner { display: flex; justify-content: space-between; gap: 20px; }
+  .footer-name { color: #d8e0e8; font-weight: 700; }
+
+  @media (max-width: 850px) {
+    .hero-content { grid-template-columns: 1fr; gap: 45px; }
+    .hero-card { max-width: 500px; }
+    .hero { padding-top: 135px; }
+    .about-grid { grid-template-columns: 1fr; gap: 28px; }
+    .expertise-grid { grid-template-columns: 1fr 1fr; }
+    .cert-grid { grid-template-columns: repeat(2, 1fr); }
+    .contact-inner { align-items: start; flex-direction: column; }
+  }
+  @media (max-width: 620px) {
+    .shell { width: min(100% - 34px, 1120px); }
+    nav { height: 70px; }
+    .menu-toggle { display: block; }
+    .nav-links {
+      display: none;
+      position: absolute;
+      top: 70px; left: 0; right: 0;
+      padding: 20px 24px 24px;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 18px;
+      background: #101a2b;
+      border-bottom: 1px solid rgba(255,255,255,.15);
+    }
+    .nav-links.open { display: flex; }
+    .nav-contact { text-align: center; }
+    .hero { min-height: 0; padding: 120px 0 62px; }
+    h1 { font-size: 48px; }
+    .hero-copy { font-size: 15px; }
+    .hero-card { min-height: 0; padding: 22px; }
+    .monogram { margin-top: 28px; }
+    .stats { grid-template-columns: 1fr; gap: 12px; padding: 21px 0; }
+    .stat, .stat:first-child { padding: 10px 0; border-right: 0; border-bottom: 1px solid var(--line); }
+    .stat:last-child { border-bottom: 0; }
+    .stat strong { font-size: 25px; }
+    section { padding: 72px 0; }
+    .section-heading { display: block; }
+    .section-heading .section-lede { margin-top: 12px; }
+    .project-grid, .expertise-grid { grid-template-columns: 1fr; }
+    .project { min-height: 250px; }
+    .cert-grid { grid-template-columns: 1fr 1fr; gap: 9px; }
+    .cert { min-height: 118px; padding: 14px; }
+    .contact { padding: 70px 0; }
+    .footer-inner { flex-direction: column; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { transition-duration: .01ms !important; }
+  }
+</style>
+</head>
+<body>
+  <div class="nav-wrap">
+    <div class="shell">
+      <nav aria-label="Main navigation">
+        <a class="brand" href="#home" aria-label="Hemavathi N M home">
+          <span class="brand-mark">HNM</span>
+          <span>Hemavathi N M</span>
+        </a>
+        <button class="menu-toggle" id="menuToggle" aria-label="Open navigation" aria-expanded="false">☰</button>
+        <div class="nav-links" id="navLinks">
+          <a href="#about">About</a>
+          <a href="#work">Selected work</a>
+          <a href="#expertise">Expertise</a>
+          <a href="#credentials">Credentials</a>
+          <a class="nav-contact" href="#contact">Let’s connect</a>
+        </div>
+      </nav>
+    </div>
+  </div>
+
+  <header class="hero" id="home">
+    <div class="hero-grid"></div>
+    <div class="shell hero-content">
+      <div>
+        <div class="eyebrow">Salesforce Architect · Bengaluru, India</div>
+        <h1>Turning complex systems into <em>clear solutions.</em></h1>
+        <p class="hero-copy">
+          I design Salesforce architectures that connect business goals to reliable delivery—across CRM, CPQ, integrations, and enterprise data migration.
+        </p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#work">Explore my work <span aria-hidden="true">↘</span></a>
+          <a class="button button-ghost" href="mailto:hemrvce@gmail.com">Get in touch <span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+      <aside class="hero-card" aria-label="Professional profile">
+        <div class="card-topline">
+          <span>Profile</span>
+          <span><i class="status-dot"></i>Architecture · Delivery</span>
+        </div>
+        <div class="monogram" aria-hidden="true">HNM</div>
+        <h2>Hemavathi N M</h2>
+        <p>Senior Salesforce Architect</p>
+        <div class="card-tags">
+          <span class="tag">Solution Design</span>
+          <span class="tag">Data Migration</span>
+          <span class="tag">Team Leadership</span>
+        </div>
+      </aside>
+    </div>
+  </header>
+
+  <div class="stats-band">
+    <div class="shell stats">
+      <div class="stat"><strong>15+</strong><span>Years in Salesforce</span></div>
+      <div class="stat"><strong>20</strong><span>Developers &amp; QA led</span></div>
+      <div class="stat"><strong>End to end</strong><span>Architecture through release</span></div>
+    </div>
+  </div>
+
+  <main>
+    <section id="about">
+      <div class="shell about-grid">
+        <div>
+          <div class="section-kicker">About me</div>
+          <h2 class="section-title">Architecture with delivery in mind.</h2>
+          <div class="about-note">“Good architecture makes the right thing easier to build, operate, and grow.”</div>
+        </div>
+        <div class="about-body">
+          <p>
+            I’m a Salesforce Architect with <strong>15+ years of experience</strong> across enterprise consulting and product programs. I work across solution design, technical leadership, data migration, and delivery—bringing business and engineering teams together around a clear path forward.
+          </p>
+          <p>
+            My platform experience includes <strong>Sales Cloud, Service Cloud, Experience Cloud, and Salesforce CPQ</strong>, with hands-on background in Apex, Lightning, Flows, and REST integrations. I lead architecture reviews, shape technical designs, mentor teams, and stay engaged from planning through release.
+          </p>
+          <p>
+            Recent work includes Salesforce programs for UKG, a reusable M&amp;A integration platform, retirement-services migration, and enterprise CPQ modernization.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="work-section" id="work">
+      <div class="shell">
+        <div class="section-heading">
+          <div>
+            <div class="section-kicker">Selected work</div>
+            <h2 class="section-title">Solving the hard parts.</h2>
+          </div>
+          <p class="section-lede">A few examples of architecture and delivery work focused on scale, maintainability, and practical outcomes.</p>
+        </div>
+        <div class="project-grid">
+          <article class="project" data-num="01">
+            <div class="project-type">Platform architecture · M&amp;A</div>
+            <h3>Reusable M&amp;A Integration Hub</h3>
+            <p>Designed a reusable platform for acquired-company data integration. Proposed moving the user correction layer to GCP and AppSheet to support scale and reduce Salesforce dependency; the revised architecture was approved by the Solution Review Board.</p>
+            <div class="project-foot"><span>Salesforce</span><span>GCP</span><span>AppSheet</span><span>Architecture Review</span></div>
+          </article>
+          <article class="project" data-num="02">
+            <div class="project-type">Data migration · Retirement services</div>
+            <h3>LU Retirement migration</h3>
+            <p>Defined migration architecture and technical designs, then led Phase 2 delivery through sprint planning, developer coordination, QA, release planning, risk management, and production support.</p>
+            <div class="project-foot"><span>Salesforce</span><span>Data Migration</span><span>Delivery Leadership</span></div>
+          </article>
+          <article class="project" data-num="03">
+            <div class="project-type">Migration framework · Shiftboard</div>
+            <h3>Built for reuse</h3>
+            <p>Designed a legacy-to-Salesforce migration approach for Account and Account Registration data, with a reusable framework that could be extended to Chatter data with minimal rework.</p>
+            <div class="project-foot"><span>Data Architecture</span><span>Reusable Framework</span><span>Salesforce</span></div>
+          </article>
+          <article class="project" data-num="04">
+            <div class="project-type">CPQ · Enterprise CRM</div>
+            <h3>Modernized quoting and order management</h3>
+            <p>Led a 20-person development and QA team delivering a Salesforce CPQ implementation to transform a legacy Siebel experience, including a custom rewards integration.</p>
+            <div class="project-foot"><span>Salesforce CPQ</span><span>Siebel Transformation</span><span>Team Leadership</span></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="expertise">
+      <div class="shell">
+        <div class="section-kicker">What I bring</div>
+        <h2 class="section-title">From architecture vision to delivery.</h2>
+        <p class="section-lede">I connect technical choices to business needs, then help teams deliver and support the solution.</p>
+        <div class="expertise-grid">
+          <article class="expertise-card">
+            <div class="expertise-icon" aria-hidden="true">⌘</div>
+            <h3>Solution architecture</h3>
+            <p>Translate requirements into scalable Salesforce designs, integration patterns, technical estimates, and review-ready architecture decisions.</p>
+          </article>
+          <article class="expertise-card">
+            <div class="expertise-icon" aria-hidden="true">⇄</div>
+            <h3>Data &amp; integration</h3>
+            <p>Design enterprise data migrations and connected solutions with clear mappings, reusable frameworks, and operational controls.</p>
+          </article>
+          <article class="expertise-card">
+            <div class="expertise-icon" aria-hidden="true">↗</div>
+            <h3>Delivery leadership</h3>
+            <p>Guide cross-functional teams through planning, technical reviews, sprint execution, QA coordination, release readiness, and production support.</p>
+          </article>
+        </div>
+        <div class="tech-list" aria-label="Technology experience">
+          <span>Sales Cloud</span><span>Service Cloud</span><span>Experience Cloud</span>
+          <span>Salesforce CPQ</span><span>Apex</span><span>Lightning Web Components</span>
+          <span>Flow</span><span>REST APIs</span><span>GCP</span><span>Copado</span><span>Git</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="cert-section" id="credentials">
+      <div class="shell">
+        <div class="section-kicker">Credentials</div>
+        <h2 class="section-title">Built on experience. Backed by learning.</h2>
+        <p class="section-lede">Salesforce certifications and platform credentials supporting architecture, delivery, and specialist work.</p>
+        <div class="cert-grid">
+          <div class="cert"><span class="seal">✳</span><span>Salesforce Agentforce Specialist</span></div>
+          <div class="cert"><span class="seal">✳</span><span>Platform Developer I</span></div>
+          <div class="cert"><span class="seal">✳</span><span>Platform Developer II</span></div>
+          <div class="cert"><span class="seal">✳</span><span>Sales Cloud Consultant</span></div>
+          <div class="cert"><span class="seal">✳</span><span>Service Cloud Consultant</span></div>
+          <div class="cert"><span class="seal">✳</span><span>Apttus CPQ Administrator</span></div>
+          <div class="cert"><span class="seal">✳</span><span>Flosum Professional</span></div>
+          <div class="cert"><span class="seal">✳</span><span>ServiceMax Administrator</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact" id="contact">
+      <div class="shell contact-inner">
+        <div>
+          <div class="section-kicker">Let’s connect</div>
+          <h2 class="section-title">Have a complex Salesforce challenge?</h2>
+          <p class="section-lede">I’m always glad to connect with people working on thoughtful Salesforce architecture, data, and delivery challenges.</p>
+        </div>
+        <div class="contact-actions">
+          <a class="button button-primary" href="mailto:hemrvce@gmail.com">Email Hemavathi <span aria-hidden="true">↗</span></a>
+          <button class="button button-light" id="copyEmail" type="button">Copy email</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="shell footer-inner">
+      <span class="footer-name">Hemavathi N M · Salesforce Architect</span>
+      <span>Designed around clear thinking and purposeful delivery.</span>
+    </div>
+  </footer>
+
+<script>
+  const menuToggle = document.getElementById("menuToggle");
+  const navLinks = document.getElementById("navLinks");
+
+  menuToggle.addEventListener("click", () => {
+    const open = navLinks.classList.toggle("open");
+    menuToggle.setAttribute("aria-expanded", String(open));
+    menuToggle.setAttribute("aria-label", open ? "Close navigation" : "Open navigation");
+    menuToggle.textContent = open ? "×" : "☰";
+  });
+
+  navLinks.querySelectorAll("a").forEach(link => {
+    link.addEventListener("click", () => {
+      navLinks.classList.remove("open");
+      menuToggle.setAttribute("aria-expanded", "false");
+      menuToggle.setAttribute("aria-label", "Open navigation");
+      menuToggle.textContent = "☰";
+    });
+  });
+
+  document.getElementById("copyEmail").addEventListener("click", async function () {
+    const email = "hemrvce@gmail.com";
+    try {
+      await navigator.clipboard.writeText(email);
+      this.textContent = "Email copied ✓";
+      setTimeout(() => this.textContent = "Copy email", 1800);
+    } catch {
+      window.location.href = "mailto:" + email;
+    }
+  });
+
+  const sections = document.querySelectorAll("main section[id], header[id]");
+  const links = document.querySelectorAll(".nav-links a[href^='#']");
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        links.forEach(link => link.classList.toggle(
+          "active",
+          link.getAttribute("href") === "#" + entry.target.id
+        ));
+      }
+    });
+  }, { rootMargin: "-35% 0px -55% 0px" });
+  sections.forEach(section => observer.observe(section));
+</script>
+</body>
+</html>
